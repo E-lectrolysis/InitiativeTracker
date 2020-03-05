@@ -5,17 +5,17 @@ public class Entity implements Comparable<Entity> {
     private String name;
     private String notes;
     private int hp;
-    private int legendaryActions;
+    private int ac;
     private int initiative;
     private boolean reaction;
 
-    public Entity(String name,int initiative,  int hp, int legendaryActions, String notes) {
+    public Entity(String name,int initiative,  int hp, int ac, String notes) {
         this.name = name;
         this.hp = hp;
-        this.legendaryActions = legendaryActions;
         this.initiative = initiative;
         this.notes = notes;
         this.reaction = true;
+        this.ac = ac;
     }
 
     public Entity(String name, int initiative) {
@@ -48,12 +48,12 @@ public class Entity implements Comparable<Entity> {
         this.hp = hp;
     }
 
-    public int getLegendaryActions() {
-        return legendaryActions;
+    public int getAc() {
+        return ac;
     }
 
-    public void setLegendaryActions(int legendaryActions) {
-        this.legendaryActions = legendaryActions;
+    public void setAc(int ac) {
+        this.ac = ac;
     }
 
     public int getInitiative() {
