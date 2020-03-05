@@ -1,5 +1,7 @@
 package stuff;
 
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
@@ -15,17 +17,17 @@ public class InitiativeView extends Pane {
 
     //buttons
     private InitiativeTracker tracker;
-    private ListView<Character> order;
+    private ListView<Entity> order;
     private Button addButton;
     private Button resetButton;
     private Button refreshButton;
-    private Button sortButton;
     private Button saveButton;
     private Button removeButton;
     private Label nameLabel;
     private Label initLabel;
     private TextField addNameField;
     private TextField addInitField;
+    private InfoPane infoPane;
 
 
     /**
@@ -34,11 +36,12 @@ public class InitiativeView extends Pane {
     public InitiativeView() {
         this.setPrefSize(1000,800);
 
+        tracker = new InitiativeTracker();
+
         //button for adding things
         addButton = new Button("Add");
         addButton.setPrefSize(70,50);
         addButton.relocate(220, 740);
-
 
         //stupid label
         nameLabel = new Label("Name:");
@@ -54,6 +57,11 @@ public class InitiativeView extends Pane {
         addInitField = new TextField();
         addInitField.setPrefSize(100, 20);
         addInitField.relocate(100, 740);
+        addInitField.textProperty().addListener((observable, oldValue, newValue) -> {
+            if (!newValue.matches("\\d*")) {
+                addInitField.setText(newValue.replaceAll("[^\\d]", ""));
+            }
+        });
 
         //keeps the characters in order
         order = new ListView<>();
@@ -77,12 +85,95 @@ public class InitiativeView extends Pane {
         resetButton.setPrefSize(100,50);
         resetButton.relocate(890, 740);
 
-        InfoPane info = new InfoPane();
-        info.relocate(450,0);
+        infoPane = new InfoPane();
+        infoPane.relocate(450,0);
 
-        getChildren().addAll(addButton, nameLabel, addNameField, initLabel, addInitField, order, removeButton, saveButton, refreshButton, resetButton, info);
+        getChildren().addAll(addButton, nameLabel, addNameField, initLabel, addInitField, order, removeButton, saveButton, refreshButton, resetButton, infoPane);
+    }
+
+    public void update() {
+        tracker.sortInitiative();
+        order.getItems().setAll((tracker.getCreatures()));
+        displayStats();
+    }
+
+    public void displayStats() {
+        int i = order.getSelectionModel().getSelectedIndex();
+        if(i > -1) {
+            infoPane.getStats(order.getItems().get(i));
+        } else {
+            infoPane.getStats(null);
+        }
+    }
+
+    public void addSomething() {
+        if(addNameField.getText() != null && addInitField.getText() != null) {
+            tracker.getCreatures().add(new Entity(addNameField.getText(), Integer.parseInt(addInitField.getText())));
+            addNameField.setText("");
+            addInitField.setText("");
+            update();
+        }
+    }
+
+    public void removeSomething() {
+        int i = order.getSelectionModel().getSelectedIndex();
+        if(i > -1) {
+            tracker.getCreatures().remove(i);
+        }
+        update();
     }
 
 
+    public void reset() {
+        tracker = new InitiativeTracker();
+    }
 
+
+    public InitiativeTracker getTracker() {
+        return tracker;
+    }
+
+    public ListView<Entity> getOrder() {
+        return order;
+    }
+
+    public Button getAddButton() {
+        return addButton;
+    }
+
+    public Button getResetButton() {
+        return resetButton;
+    }
+
+    public Button getRefreshButton() {
+        return refreshButton;
+    }
+
+    public Button getSaveButton() {
+        return saveButton;
+    }
+
+    public Button getRemoveButton() {
+        return removeButton;
+    }
+
+    public Label getNameLabel() {
+        return nameLabel;
+    }
+
+    public Label getInitLabel() {
+        return initLabel;
+    }
+
+    public TextField getAddNameField() {
+        return addNameField;
+    }
+
+    public TextField getAddInitField() {
+        return addInitField;
+    }
+
+    public InfoPane getInfoPane() {
+        return infoPane;
+    }
 }

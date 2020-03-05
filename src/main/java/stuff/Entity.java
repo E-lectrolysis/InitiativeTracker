@@ -9,6 +9,15 @@ public class Entity implements Comparable<Entity> {
     private int initiative;
     private boolean reaction;
 
+
+    /**
+     * creates an instance of this object with all the things pre filled out already
+     * @param name entity's name
+     * @param initiative the initiative it rolled
+     * @param hp its hp
+     * @param ac its ac
+     * @param notes additional notes
+     */
     public Entity(String name,int initiative,  int hp, int ac, String notes) {
         this.name = name;
         this.hp = hp;
@@ -18,18 +27,32 @@ public class Entity implements Comparable<Entity> {
         this.ac = ac;
     }
 
+    /**
+     * this is probably the constructor that i'll end up using
+     * @param name the name of the entity
+     * @param initiative the initiative which it rolled
+     */
     public Entity(String name, int initiative) {
         this(name, initiative, 0, 0, "");
     }
 
+    /**
+     * allows this object to be sorted in lists
+     * @param e another entity to be compared against
+     * @return the difference of the initiatives
+     */
     @Override
     public int compareTo(Entity e) {
-        return this.initiative - e.getInitiative();
+        return e.getInitiative()-this.getInitiative();
     }
 
+    /**
+     * so that this heckin object actually has a legible name on the list view thingy
+     * @return a string which displays the creature's name along with its initiatibe
+     */
     @Override
     public String toString() {
-        return super.toString();
+        return this.getName() + " " + this.getInitiative();
     }
 
     public String getName() {
