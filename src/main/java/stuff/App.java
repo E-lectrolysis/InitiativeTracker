@@ -35,12 +35,9 @@ public class App extends Application {
         stage.show();
     }
 
-    /**
-     * the main method
-     * @param args i think this is java launch args or something?
-     */
-    public static void main(String[] args) {
+    public static void go() {
         launch();
     }
+
 
 }
