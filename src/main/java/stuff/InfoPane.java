@@ -102,10 +102,23 @@ public class InfoPane extends Pane {
 
     public void setStats(Entity e) {
         if(e != null) {
-            e.setName(nameField.getText());
-            e.setInitiative(Integer.parseInt(initField.getText()));
-            e.setHp(Integer.parseInt(hpField.getText()));
-            e.setAc(Integer.parseInt(acField.getText()));
+            e.setName(nameField.getText().strip());
+            try {
+                e.setInitiative(Integer.parseInt(initField.getText()));
+            } catch(NumberFormatException n) {
+                e.setInitiative(0);
+            }
+            try {
+                e.setHp(Integer.parseInt(hpField.getText()));
+            } catch(NumberFormatException n) {
+                e.setHp(0);
+            }
+
+            try {
+                e.setAc(Integer.parseInt(acField.getText()));
+            } catch(NumberFormatException n) {
+                e.setAc(0);
+            }
             e.setReaction(reactionBox.isSelected());
             e.setNotes(notes.getText());
         }

@@ -1,5 +1,7 @@
 package stuff;
 
+import java.util.Random;
+
 public class Entity implements Comparable<Entity> {
 
     private String name;
@@ -28,6 +30,18 @@ public class Entity implements Comparable<Entity> {
     }
 
     /**
+     * in the case of an initiative tie
+     * @return result  of tiebreak
+     */
+    private int tieBreak() {
+        Random random = new Random();
+        if(random.nextInt(2) > 0) {
+            return 1;
+        }
+        return -1;
+    }
+
+    /**
      * this is probably the constructor that i'll end up using
      * @param name the name of the entity
      * @param initiative the initiative which it rolled
@@ -43,7 +57,11 @@ public class Entity implements Comparable<Entity> {
      */
     @Override
     public int compareTo(Entity e) {
-        return e.getInitiative()-this.getInitiative();
+        int result = e.getInitiative()-this.getInitiative();
+        if(result == 0 ) {
+            result = tieBreak();
+        }
+        return result;
     }
 
     /**
@@ -52,7 +70,7 @@ public class Entity implements Comparable<Entity> {
      */
     @Override
     public String toString() {
-        return this.getName() + " " + this.getInitiative();
+        return this.getInitiative() + " | " + this.getName();
     }
 
     public String getName() {

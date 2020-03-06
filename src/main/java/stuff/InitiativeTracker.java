@@ -18,4 +18,10 @@ public class InitiativeTracker {
     public void sortInitiative() {
         Collections.sort(creatures);
     }
+
+    public void resetReactions() {
+        for(Entity c: creatures) {
+            c.setReaction(true);
+        }
+    }
 }

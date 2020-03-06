@@ -2,10 +2,7 @@ package stuff;
 
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.ListView;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.layout.Pane;
 
 /**
@@ -28,6 +25,7 @@ public class InitiativeView extends Pane {
     private TextField addNameField;
     private TextField addInitField;
     private InfoPane infoPane;
+    private Alert warning;
 
 
     /**
@@ -45,18 +43,18 @@ public class InitiativeView extends Pane {
 
         //stupid label
         nameLabel = new Label("Name:");
-        nameLabel.relocate(10, 770);
+        nameLabel.relocate(10, 740);
 
         addNameField = new TextField();
-        addNameField.setPrefSize(150, 20);
-        addNameField.relocate(50, 770);
+        addNameField.setPrefSize(130, 20);
+        addNameField.relocate(70, 740);
 
         initLabel = new Label("Initiative:");
-        initLabel.relocate(10, 740);
+        initLabel.relocate(10, 770);
 
         addInitField = new TextField();
-        addInitField.setPrefSize(100, 20);
-        addInitField.relocate(100, 740);
+        addInitField.setPrefSize(80, 20);
+        addInitField.relocate(120, 770);
         addInitField.textProperty().addListener((observable, oldValue, newValue) -> {
             if (!newValue.matches("\\d*")) {
                 addInitField.setText(newValue.replaceAll("[^\\d]", ""));
@@ -74,19 +72,22 @@ public class InitiativeView extends Pane {
         removeButton.relocate(300, 740);
 
         saveButton = new Button("Update");
-        saveButton.setPrefSize(200,50);
-        saveButton.relocate(450, 740);
+        saveButton.setPrefSize(180,50);
+        saveButton.relocate(460, 740);
 
         refreshButton = new Button("Refresh");
         refreshButton.setPrefSize(100,50);
         refreshButton.relocate(660, 740);
 
-        resetButton = new Button("Reset");
+        resetButton = new Button("Reset All");
         resetButton.setPrefSize(100,50);
-        resetButton.relocate(890, 740);
+        resetButton.relocate(840, 740);
 
         infoPane = new InfoPane();
         infoPane.relocate(450,0);
+
+        warning = new Alert(Alert.AlertType.WARNING);
+        warning.setContentText("One or more fields are empty. Please make sure both are filled out.");
 
         getChildren().addAll(addButton, nameLabel, addNameField, initLabel, addInitField, order, removeButton, saveButton, refreshButton, resetButton, infoPane);
     }
@@ -106,12 +107,28 @@ public class InitiativeView extends Pane {
         }
     }
 
+    /**
+     * update the stats displayed in the info pane
+     */
+    public void updateStats() {
+        int i = order.getSelectionModel().getSelectedIndex();
+        if(i > -1) {
+            infoPane.setStats(tracker.getCreatures().get(i));
+            update();
+        }
+    }
+
+    /**
+     * adds a new creature to the initiative order
+     */
     public void addSomething() {
-        if(addNameField.getText() != null && addInitField.getText() != null) {
-            tracker.getCreatures().add(new Entity(addNameField.getText(), Integer.parseInt(addInitField.getText())));
+        if(!(addNameField.getText().equalsIgnoreCase("") || addInitField.getText().equalsIgnoreCase(""))) {
+            tracker.getCreatures().add(new Entity(addNameField.getText().strip(), Integer.parseInt(addInitField.getText())));
             addNameField.setText("");
             addInitField.setText("");
             update();
+        } else {
+            warning.showAndWait();
         }
     }
 
@@ -126,6 +143,7 @@ public class InitiativeView extends Pane {
 
     public void reset() {
         tracker = new InitiativeTracker();
+        update();
     }
 
 
